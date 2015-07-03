@@ -110,3 +110,174 @@ describe 'Validator',->
                     min: 4
                     max: 10
                 }
+    describe 'character',->
+        describe 'ASCII printable',->
+            it 'ok',->
+                assert.equal v.isASCIIPrintable("foobar"),null
+                assert.equal v.isASCIIPrintable(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"),null
+
+            it 'control sequence',->
+                assert.deepEqual v.isASCIIPrintable("foobar\u0000"),{
+                    name: "ValidationError"
+                    code: error.code.character.asciiPrintable
+                    value: "foobar\u0000"
+                }
+            it 'nonASCII characters',->
+                assert.deepEqual v.isASCIIPrintable("鹿苑寺金閣"),{
+                    name: "ValidationError"
+                    code: error.code.character.asciiPrintable
+                    value: "鹿苑寺金閣"
+                }
+
+    describe 'formats',->
+        describe 'number',->
+            describe 'basic',->
+                it 'ok',->
+                    assert.equal v.isNumber("123456"),null
+                    assert.equal v.isNumber("00001"),null
+                    assert.equal v.isNumber("0"),null
+                    assert.equal v.isNumber("03.14159"),null
+                    assert.equal v.isNumber("333."),null
+                    assert.equal v.isNumber(".123"),null
+                it 'non-number character',->
+                    assert.deepEqual v.isNumber("foobar"),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "foobar"
+                    }
+                    assert.deepEqual v.isNumber("123foobar456"),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "123foobar456"
+                    }
+                it 'invalid format',->
+                    assert.deepEqual v.isNumber(""),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: ""
+                    }
+                    assert.deepEqual v.isNumber("."),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "."
+                    }
+                    assert.deepEqual v.isNumber("123.456.7"),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "123.456.7"
+                    }
+                    assert.deepEqual v.isNumber("-33.4"),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "-33.4"
+                    }
+            describe 'allowNegatives',->
+                it 'ok',->
+                    assert.equal v.isNumber("123",true),null
+                    assert.equal v.isNumber("+00001",true),null
+                    assert.equal v.isNumber("-0",true),null
+                    assert.equal v.isNumber("-03.14159",true),null
+                    assert.equal v.isNumber("-333.",true),null
+                    assert.equal v.isNumber("+.123",true),null
+                it 'non-number character',->
+                    assert.deepEqual v.isNumber("-foobar",true),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "-foobar"
+                    }
+                    assert.deepEqual v.isNumber("-123foobar+456",true),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "-123foobar+456"
+                    }
+                it 'invalid format',->
+                    assert.deepEqual v.isNumber(".",true),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "."
+                    }
+                    assert.deepEqual v.isNumber("-",true),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "-"
+                    }
+                    assert.deepEqual v.isNumber("-.",true),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "-."
+                    }
+                    assert.deepEqual v.isNumber("-123.444.5",true),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "-123.444.5"
+                    }
+                    assert.deepEqual v.isNumber("-+3",true),{
+                        name:"ValidationError"
+                        code: error.code.format.number
+                        value: "-+3"
+                    }
+        describe 'integer',->
+            describe 'basic',->
+                it 'ok',->
+                    assert.equal v.isInteger("123456"),null
+                    assert.equal v.isInteger("00001"),null
+                    assert.equal v.isInteger("0"),null
+                it 'non-number character',->
+                    assert.deepEqual v.isInteger("foobar"),{
+                        name:"ValidationError"
+                        code: error.code.format.integer
+                        value: "foobar"
+                    }
+                it 'invalid format',->
+                    assert.deepEqual v.isInteger(""),{
+                        name:"ValidationError"
+                        code: error.code.format.integer
+                        value: ""
+                    }
+                    assert.deepEqual v.isInteger("123.4"),{
+                        name:"ValidationError"
+                        code: error.code.format.integer
+                        value: "123.4"
+                    }
+                    assert.deepEqual v.isInteger("-5"),{
+                        name:"ValidationError"
+                        code: error.code.format.integer
+                        value: "-5"
+                    }
+            describe 'allowNegatives',->
+                it 'ok',->
+                    assert.equal v.isInteger("123",true),null
+                    assert.equal v.isInteger("+00001",true),null
+                    assert.equal v.isInteger("-0",true),null
+                it 'non-number character',->
+                    assert.deepEqual v.isInteger("-foobar",true),{
+                        name:"ValidationError"
+                        code: error.code.format.integer
+                        value: "-foobar"
+                    }
+                it 'invalid format',->
+                    assert.deepEqual v.isInteger(".",true),{
+                        name:"ValidationError"
+                        code: error.code.format.integer
+                        value: "."
+                    }
+                    assert.deepEqual v.isInteger("-",true),{
+                        name:"ValidationError"
+                        code: error.code.format.integer
+                        value: "-"
+                    }
+                    assert.deepEqual v.isInteger("-.",true),{
+                        name:"ValidationError"
+                        code: error.code.format.integer
+                        value: "-."
+                    }
+                    assert.deepEqual v.isInteger("-123.444.5",true),{
+                        name:"ValidationError"
+                        code: error.code.format.integer
+                        value: "-123.444.5"
+                    }
+                    assert.deepEqual v.isInteger("-+3",true),{
+                        name:"ValidationError"
+                        code: error.code.format.integer
+                        value: "-+3"
+                    }

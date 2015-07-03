@@ -39,6 +39,49 @@ class Validator{
         return null;
     }
 
+    //character types
+    isASCIIPrintable(value:string):error.ValidationError{
+        if("string"!==typeof value){
+            return new error.ValidationError(error.code.type, value);
+        }
+        if(/^[\u0020-\u007E]*$/.test(value)){
+            return null;
+        }
+        return new error.ValidationError(error.code.character.asciiPrintable,value);
+    }
+
+    //string forms
+    isNumber(value:string,allowNegatives?:boolean):error.ValidationError{
+        if("string"!==typeof value){
+            return new error.ValidationError(error.code.type, value);
+        }
+        if(allowNegatives){
+            if(/^[\+\-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(value)){
+                return null;
+            }
+        }else{
+            if(/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value)){
+                return null;
+            }
+        }
+        return new error.ValidationError(error.code.format.number,value);
+    }
+    isInteger(value:string,allowNegatives?:boolean):error.ValidationError{
+        if("string"!==typeof value){
+            return new error.ValidationError(error.code.type, value);
+        }
+        if(allowNegatives){
+            if(/^[\+\-]?\d+$/.test(value)){
+                return null;
+            }
+        }else{
+            if(/^\d+$/.test(value)){
+                return null;
+            }
+        }
+        return new error.ValidationError(error.code.format.integer,value);
+    }
+
     //util methods
     //length taking account of Surrogate pairs
     private unicodeLength(value:string):number{

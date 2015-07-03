@@ -37,4 +37,12 @@ export module code{
         min: "ERR_LENGTH_MIN",
         max: "ERR_LENGTH_MAX"
     };
+    export var character={
+        asciiPrintable: "ERR_CHARACTER_ASCIIPRINTABLE"
+    };
+
+    export var format={
+        number: "ERR_FORMAT_NUMBER",
+        integer: "ERR_FORMAT_INTEGER"
+    }
 }
