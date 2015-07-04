@@ -45,6 +45,7 @@ export module code{
 
     export var format={
         number: "ERR_FORMAT_NUMBER",
-        integer: "ERR_FORMAT_INTEGER"
+        integer: "ERR_FORMAT_INTEGER",
+        email: "ERR_FORMAT_EMAIL"
     }
 }

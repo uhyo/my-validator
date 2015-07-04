@@ -316,3 +316,94 @@ describe 'Validator',->
                         code: error.code.format.integer
                         value: "-+3"
                     }
+        describe 'email',->
+            it 'dot-string ok',->
+                assert.equal v.isEmail("foo@example.com"),null
+                assert.equal v.isEmail("postmaster@localhost"),null
+                assert.equal v.isEmail("foo.bar@ma-il--.example.net"),null
+                assert.equal v.isEmail("foo.bar1234@[192.168.0.1]"),null
+                assert.equal v.isEmail("yff'RU}}~}$#.UR!!$'G='???'R'$#R#R'$^````*+-@[127.0.0.1]"),null
+            it 'dot-string too long',->
+                assert.deepEqual v.isEmail("12345678901234567890123456789012345678901234567890123456789012345@example.com"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: "12345678901234567890123456789012345678901234567890123456789012345@example.com"
+                }
+            it 'dot-string invalid dot',->
+                assert.deepEqual v.isEmail(".foo@a-b-c--.example.com"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: ".foo@a-b-c--.example.com"
+                }
+                assert.deepEqual v.isEmail("foo.@localhost"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: "foo.@localhost"
+                }
+                assert.deepEqual v.isEmail("foo..bar@localhost"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: "foo..bar@localhost"
+                }
+            it 'dot-string invalid character',->
+                assert.deepEqual v.isEmail("foo(bar)@localhost"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: "foo(bar)@localhost"
+                }
+                assert.deepEqual v.isEmail("foo<bar>@localhost"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: "foo<bar>@localhost"
+                }
+                assert.deepEqual v.isEmail("foo[bar]@localhost"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: "foo[bar]@localhost"
+                }
+                assert.deepEqual v.isEmail("foo:bar@localhost"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: "foo:bar@localhost"
+                }
+                assert.deepEqual v.isEmail("foo;bar@localhost"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: "foo;bar@localhost"
+                }
+                assert.deepEqual v.isEmail("foo@bar@localhost"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: "foo@bar@localhost"
+                }
+                assert.deepEqual v.isEmail("foo,bar@localhost"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: "foo,bar@localhost"
+                }
+                assert.deepEqual v.isEmail("富士山@localhost"),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value: "富士山@localhost"
+                }
+            it 'quoted-string ok',->
+                assert.equal v.isEmail('"abc123def"@example.com'),null
+                assert.equal v.isEmail('".foo..bar."@ma-il.example.com'),null
+                assert.equal v.isEmail('"foo(bar); (baz)\\A\\B\\C\\\\@@@@@@@@?!^^^^^^\\\\"@example.net'),null
+                assert.equal v.isEmail('"foo(bar) \\"@example.com "@example.com'),null
+            it 'quoted-string invalid',->
+                assert.deepEqual v.isEmail('"foo""bar"@example.org'),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value:'"foo""bar"@example.org'
+                }
+                assert.deepEqual v.isEmail('"foo(bar) \\"@example.com'),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value:'"foo(bar) \\"@example.com'
+                }
+                assert.deepEqual v.isEmail('"慈照寺銀閣"@example.org'),{
+                    name: "ValidationError"
+                    code: error.code.format.email
+                    value:'"慈照寺銀閣"@example.org'
+                }
