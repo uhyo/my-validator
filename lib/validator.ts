@@ -49,6 +49,36 @@ class Validator{
         }
         return new error.ValidationError(error.code.character.asciiPrintable,value);
     }
+    isHiragana(value:string,allowSpace?:boolean):error.ValidationError{
+        if("string"!==typeof value){
+            return new error.ValidationError(error.code.type, value);
+        }
+        if(allowSpace){
+            if(/^[\u3000\u3041-\u3096\u3099-\u309f]*$/.test(value)){
+                return null;
+            }
+        }else{
+            if(/^[\u3041-\u3096\u3099-\u309f]*$/.test(value)){
+                return null;
+            }
+        }
+        return new error.ValidationError(error.code.character.hiragana,value);
+    }
+    isKatakana(value:string,allowSpace?:boolean):error.ValidationError{
+        if("string"!==typeof value){
+            return new error.ValidationError(error.code.type, value);
+        }
+        if(allowSpace){
+            if(/^[\u3000\u30a1-\u30ff]*$/.test(value)){
+                return null;
+            }
+        }else{
+            if(/^[\u30a1-\u30ff]*$/.test(value)){
+                return null;
+            }
+        }
+        return new error.ValidationError(error.code.character.katakana,value);
+    }
 
     //string forms
     isNumber(value:string,allowNegatives?:boolean):error.ValidationError{

@@ -128,6 +128,41 @@ describe 'Validator',->
                     code: error.code.character.asciiPrintable
                     value: "鹿苑寺金閣"
                 }
+        describe 'hiragana',->
+            it 'ok',->
+                assert.equal v.isHiragana(""),null
+                assert.equal v.isHiragana("いろはにほへとちりぬるを"),null
+                assert.equal v.isHiragana("あいうえおかきくけこさっしすせそたちつてとなにぬねのはひふへほまみむめもやゃゆゅよょらりるれろぁぃぅぇぉわゐうゑをんがぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ"),null
+            it 'spaces',->
+                assert.deepEqual v.isHiragana("あいう　えお"),{
+                    name: "ValidationError"
+                    code: error.code.character.hiragana
+                    value: "あいう　えお"
+                }
+                assert.equal v.isHiragana("あいう　えお",true),null
+            it 'non-hiragana character',->
+                assert.deepEqual v.isHiragana("鹿苑寺金閣"),{
+                    name: "ValidationError"
+                    code: error.code.character.hiragana
+                    value: "鹿苑寺金閣"
+                }
+        describe 'katakana',->
+            it 'ok',->
+                assert.equal v.isKatakana(""),null
+                assert.equal v.isKatakana("アイウエオカキクケコサシスセソタチツッテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヰウヱヲンァィゥェォャュョガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポ"),null
+            it 'spaces',->
+                assert.deepEqual v.isKatakana("タナカ　タロウ"),{
+                    name: "ValidationError"
+                    code: error.code.character.katakana
+                    value: "タナカ　タロウ"
+                }
+                assert.equal v.isKatakana("タナカ　タロウ",true),null
+            it 'non-katakana character',->
+                assert.deepEqual v.isKatakana("鹿苑寺金閣"),{
+                    name: "ValidationError"
+                    code: error.code.character.katakana
+                    value: "鹿苑寺金閣"
+                }
 
     describe 'formats',->
         describe 'number',->

@@ -38,7 +38,9 @@ export module code{
         max: "ERR_LENGTH_MAX"
     };
     export var character={
-        asciiPrintable: "ERR_CHARACTER_ASCIIPRINTABLE"
+        asciiPrintable: "ERR_CHARACTER_ASCIIPRINTABLE",
+        hiragana: "ERR_CHARACTER_HIRAGANA",
+        katakana: "ERR_CHARACTER_KATAKANA"
     };
 
     export var format={
