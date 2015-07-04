@@ -28,6 +28,7 @@ export class LengthError extends ValidationError{
     }
 }
 
+
 export module code{
     export var type="ERR_TYPE";
     export var pattern={
@@ -36,6 +37,9 @@ export module code{
     export var length={
         min: "ERR_LENGTH_MIN",
         max: "ERR_LENGTH_MAX"
+    };
+    export var lines={
+        max: "ERR_LINES_MAX"
     };
     export var character={
         asciiPrintable: "ERR_CHARACTER_ASCIIPRINTABLE",

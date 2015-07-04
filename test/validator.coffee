@@ -110,6 +110,27 @@ describe 'Validator',->
                     min: 4
                     max: 10
                 }
+    describe 'lines',->
+        it 'ok',->
+            assert.equal v.lines("foo\nbar\nbaz",3),null
+            assert.equal v.lines("foo\rbar\nbaz\r\nquux",10),null
+        it 'over',->
+            assert.deepEqual v.lines("foo\nbar\nbaz\r\nquux",3),{
+                name: "LengthError"
+                code: error.code.lines.max
+                value: "foo\nbar\nbaz\r\nquux"
+                min: 3
+                max: null
+            }
+        it 'tail-newline cutoff',->
+            assert.equal v.lines("foo\nbar\nbaz\n\n\n",3),null
+            assert.deepEqual v.lines("foo\nbar\nbaz\n\n\nquux",4),{
+                name: "LengthError"
+                code: error.code.lines.max
+                value: "foo\nbar\nbaz\n\n\nquux"
+                min: 4
+                max: null
+            }
     describe 'character',->
         describe 'ASCII printable',->
             it 'ok',->

@@ -39,6 +39,19 @@ class Validator{
         return null;
     }
 
+    lines(value:string,max:number):error.ValidationError|error.LengthError{
+        if("string"!==typeof value){
+            return new error.ValidationError(error.code.type, value);
+        }
+        var lines=value.split(/\r\n|\r|\n/);
+        var linenum=lines.length;
+        while(linenum>max && linenum>0 && lines[linenum-1]==="")linenum--;
+        if(linenum>max){
+            return new error.LengthError(error.code.lines.max,value,max,null);
+        }
+        return null;
+    }
+
     //character types
     isASCIIPrintable(value:string):error.ValidationError{
         if("string"!==typeof value){
