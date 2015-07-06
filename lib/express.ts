@@ -7,9 +7,11 @@ function middleware(req:any, res:any, next:Function):void{
     req.validateQuery=validateQuery;
     req.validateBody=validateBody;
     req.validateParams=validateParams;
+    req.throwValidationErrors=throwValidationErrors;
     next();
 }
 
+//Request methods
 function validateQuery(name:string):Validation{
     return new Validation(this, "query", name, this.query[name]);
 }
@@ -20,6 +22,14 @@ function validateBody(name:string):Validation{
 
 function validateParams(name:string):Validation{
     return new Validation(this, "params", name, this.params[name]);
+}
+
+function throwValidationErrors():Validation{
+    if(this._validationErrors.length===0)return;
+    var e:any=new Error("Validation Error");
+    e.name="ValidationError";
+    e.errors=this._validationErrors;
+    throw e;
 }
 
 class Validation{

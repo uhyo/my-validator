@@ -180,3 +180,22 @@ describe 'express',->
                     }
                 }]
                 done()
+    describe 'throws',->
+        it 'does not throw if ok',(done)->
+            expressv req,res,->
+                req.validateQuery("hoge").isInteger().length(5,5)
+                assert.doesNotThrow ->
+                    req.throwValidationErrors()
+                done()
+        it 'throws if validation error',(done)->
+            expressv req,res,->
+                req.validateBody("foo").isEmail()
+                assert.throws (->
+                    req.throwValidationErrors()
+                ),(e)->
+                    if e instanceof Error && e.name=="ValidationError" && e.errors==req._validationErrors
+                        return true
+                    else
+                        return false
+                done()
+
