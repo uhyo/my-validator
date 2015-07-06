@@ -1,7 +1,8 @@
 assert=require 'assert'
 
-error=require '../lib/error'
-expressv=require '../lib/express'
+validator=require '../'
+error=validator.error
+expressv=validator.forExpress
 
 makeObj = (query={},body={},params={})->
     return {
