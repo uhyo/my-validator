@@ -44,7 +44,7 @@ describe 'express',->
         it 'basic validation fails',(done)->
 
             expressv req,res,->
-                req.validateQuery("foo").length(10,5).isInteger()
+                req.validateQuery("foo").length(5,10).isInteger()
                 req.validateQuery("hoge").isHiragana()
                 req.validateQuery("baz").isInteger()
 

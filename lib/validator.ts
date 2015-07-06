@@ -24,9 +24,15 @@ export function minLength(value:string,min:number):error.ValidationError|error.L
     }
     return null;
 }
-export function length(value:string,max:number,min?:number):error.ValidationError|error.LengthError{
+export function length(value:string,arg1:number,arg2?:number):error.ValidationError|error.LengthError{
     if("string"!==typeof value){
         return new error.ValidationError(error.code.type, value);
+    }
+    var max,min;
+    if("number"===typeof arg2){
+        max=arg2, min=arg1;
+    }else{
+        max=arg1, min=null;
     }
     var len=unicodeLength(value);
     if(max!=null && max<len){
