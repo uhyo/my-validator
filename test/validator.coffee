@@ -1,9 +1,7 @@
 assert=require 'assert'
 
-Validator=require '../lib/validator'
+v=require '../lib/validator'
 error=require '../lib/error'
-
-v=new Validator
 
 describe 'Validator',->
     describe 'matches',->
