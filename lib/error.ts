@@ -34,6 +34,7 @@ export module code{
     export var pattern={
         unmatch: "ERR_PATTERN_UNMATCH"
     };
+    export var empty="ERR_EMPTY";
     export var length={
         min: "ERR_LENGTH_MIN",
         max: "ERR_LENGTH_MAX"

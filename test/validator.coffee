@@ -16,6 +16,16 @@ describe 'Validator',->
                 value: "foobar"
                 pattern: p
             }
+    describe 'empty',->
+        it 'ok',->
+            assert.equal v.isnotEmpty("foo"),null
+            assert.equal v.isnotEmpty("   \t   \t\t\n\n\n\n"),null
+        it 'error',->
+            assert.deepEqual v.isnotEmpty(""),{
+                name: "ValidationError"
+                code: error.code.empty
+                value: ""
+            }
     describe 'length',->
         describe 'max',->
             it 'ok',->
@@ -406,3 +416,24 @@ describe 'Validator',->
                     code: error.code.format.email
                     value:'"慈照寺銀閣"@example.org'
                 }
+
+    describe 'addCustomValidator',->
+        it 'default error code',->
+            code=v.addCustomValidator 'isIn',(value,arr)-> value in arr
+            assert.equal code,"ERR_CUSTOM_isIn"
+            assert.equal v.isIn("foo",["foo","bar","baz"]),null
+            assert.deepEqual v.isIn("foo",["hoge","piyo"]),{
+                name: "ValidationError"
+                code: code
+                value: "foo"
+            }
+        it 'custom error code',->
+            code=v.addCustomValidator 'isEven',"ERR_MY_ISEVEN",(value)-> parseInt(value)%2 == 0
+            assert.equal code,"ERR_MY_ISEVEN"
+            assert.equal v.isEven("6"),null
+            assert.deepEqual v.isEven("foo"),{
+                name: "ValidationError"
+                code: "ERR_MY_ISEVEN"
+                value: "foo"
+            }
+

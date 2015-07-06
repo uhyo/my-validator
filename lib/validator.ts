@@ -1,5 +1,7 @@
 import error=require('./error');
 
+declare var exports:any;
+
 // matches pattern
 export function matches(value:string,pattern:RegExp):error.ValidationError|error.PatternMatchError{
     //test if value is string
@@ -11,6 +13,17 @@ export function matches(value:string,pattern:RegExp):error.ValidationError|error
         return null;
     }
     return new error.PatternMatchError(error.code.pattern.unmatch,value,pattern);
+}
+
+//empty
+export function isnotEmpty(value:string):error.ValidationError{
+    if("string"!==typeof value){
+        return new error.ValidationError(error.code.type, value);
+    }
+    if(value!==""){
+        return null;
+    }
+    return new error.ValidationError(error.code.empty, value);
 }
 
 // within length
@@ -178,6 +191,26 @@ export function isEmail(value:string):error.ValidationError{
         return null;
     }
     return new error.ValidationError(error.code.format.email,value);
+}
+
+
+//--------- add custom validity
+export function addCustomValidator(name:string,arg2:any,arg3?:(value:string,...args:any[])=>error.ValidationError):string{
+    var code:string,func;
+    if(arg3!=null){
+        code=arg2, func=arg3;
+    }else{
+        code="ERR_CUSTOM_"+name, func=arg2;
+    }
+    exports[name] = (value:string,...args)=>{
+        var valid = func(value,...args);
+        if(valid){
+            return null;
+        }else{
+            return new error.ValidationError(code,value);
+        }
+    };
+    return code;
 }
 
 //util methods

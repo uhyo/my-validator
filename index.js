@@ -6,3 +6,5 @@ exports.funcs = validator;
 exports.forExpress = express;
 exports.error = error;
 
+//exported funcs
+exports.addCustomValidator = validator.addCustomValidator;

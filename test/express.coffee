@@ -199,4 +199,20 @@ describe 'express',->
                     else
                         return false
                 done()
+    it 'use custom validator',->
+        code=validator.addCustomValidator 'isCustom1',(value)-> value=="bar"
+        expressv req,res,->
+            req.validateQuery("foo").isCustom1()
+            req.validateQuery("hoge").isCustom1()
+            assert.deepEqual req._validationErrors,[{
+                type: "query"
+                name: "hoge"
+                error: {
+                    name: "ValidationError"
+                    code: code
+                    value: "12345"
+                }
+            }]
+
+
 
